@@ -19,6 +19,7 @@ private:
 	int brushSize = 5;
 	char selectedParticle;
 	bool moveDir = false;
+	bool quit = false;
 
 public:
 	Game();

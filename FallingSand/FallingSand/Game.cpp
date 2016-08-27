@@ -18,7 +18,7 @@ void Game::initGraphics()
 
 void Game::play()
 {
-	while (true)
+	while (!quit)
 	{
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
@@ -56,6 +56,11 @@ void Game::handleEvent()
 		{
 			brushSize += event.wheel.y;
 			if (brushSize < 2) brushSize = 2;
+		}
+
+		if (event.type == SDL_QUIT)
+		{
+			quit = true;
 		}
 	}
 }
