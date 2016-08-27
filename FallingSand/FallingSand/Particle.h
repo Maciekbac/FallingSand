@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <cstdlib>
 #include <ctime>
+//#include <vector>;
 
 //particles names
 #define none 'n'
@@ -19,5 +20,6 @@ public:
 	char map[800][600];
 	Particle();
 	void move(int x, int y);
+	bool canMove(int x, int y, char particleType);
 };
 
