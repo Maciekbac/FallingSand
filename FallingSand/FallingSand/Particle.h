@@ -21,5 +21,6 @@ public:
 	Particle();
 	void move(int x, int y);
 	bool canMove(int x, int y, char particleType);
+	void swapParticles(int x,int y,int xn,int yn);
 };
 

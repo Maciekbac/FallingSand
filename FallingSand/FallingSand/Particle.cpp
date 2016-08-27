@@ -12,15 +12,14 @@ void Particle::move(int x, int y)
 {
 	if (map[x][y] == sand)
 	{
-		if (canMove(x,y+1,sand))
+		if (canMove(x, y + 1, sand))
 		{
 			int distance = rand() % 5 + 1;
 			for (int i = distance; i >= 1; i--)
 			{
-				if (canMove(x,y + i,sand))
+				if (canMove(x, y + i, sand))
 				{
-					map[x][y + i] = sand;
-					map[x][y] = none;
+					swapParticles(x, y, x, y + i);
 					break;
 				}
 			}
@@ -28,87 +27,74 @@ void Particle::move(int x, int y)
 
 		else
 		{
-			if (canMove(x + 1,y + 1,sand))
+			if (canMove(x + 1, y + 1, sand))
 			{
-				map[x + 1][y + 1] = sand;
-				map[x][y] = none;
+				swapParticles(x, y, x + 1, y + 1);
 			}
-			else if (canMove(x - 1,y + 1,sand))
+			else if (canMove(x - 1, y + 1, sand))
 			{
-				map[x - 1][y + 1] = sand;
-				map[x][y] = none;
+				swapParticles(x, y, x - 1, y + 1);
 			}
 		}
 	}
 
 	else if (map[x][y] == water)
 	{
-		if (canMove(x,y + 1,water))
+		if (canMove(x, y + 1, water))
 		{
 			int distance = rand() % 5 + 1;
 			for (int i = distance; i >= 1; i--)
 			{
-				if (canMove(x,y + i,water))
+				if (canMove(x, y + i, water))
 				{
-					map[x][y + i] = water;
-					map[x][y] = none;
+					swapParticles(x, y, x, y + i);
 					break;
 				}
 			}
 		}
 
-		else if (canMove(x + 1,y + 1,water) && canMove(x - 1,y + 1,water))
+		else if (canMove(x + 1, y + 1, water) && canMove(x - 1, y + 1, water))
 		{
 			int r = rand() % 2;
 			if (r == 0)
 			{
-				map[x + 1][y + 1] = water;
-				map[x][y] = none;
+				swapParticles(x, y, x + 1, y + 1);
 			}
 			else
 			{
-				map[x - 1][y + 1] = water;
-				map[x][y] = none;
+				swapParticles(x, y, x - 1, y + 1);
 			}
 		}
-		else if (canMove(x + 1,y + 1,water))
+		else if (canMove(x + 1, y + 1, water))
 		{
-			map[x + 1][y + 1] = water;
-			map[x][y] = none;
+			swapParticles(x, y, x + 1, y + 1);
 
 		}
-		else if (canMove(x - 1,y + 1,water))
+		else if (canMove(x - 1, y + 1, water))
 		{
-			map[x - 1][y + 1] = water;
-			map[x][y] = none;
+			swapParticles(x, y, x - 1, y + 1);
 		}
 
-		else if (canMove(x - 1,y,water) && canMove(x + 1,y,water))
+		else if (canMove(x - 1, y, water) && canMove(x + 1, y, water))
 		{
 			int r = rand() % 2;
 			if (r == 0)
 			{
-				map[x - 1][y] = water;
-				map[x][y] = none;
+				swapParticles(x, y, x - 1, y);
 			}
 			else
 			{
-				map[x + 1][y] = water;
-				map[x][y] = none;
+				swapParticles(x, y, x + 1, y);
 			}
 		}
 
-		else if (canMove(x - 1,y,water))
+		else if (canMove(x - 1, y, water))
 		{
-			map[x - 1][y] = water;
-			map[x][y] = none;
-
+			swapParticles(x, y, x - 1, y);
 		}
-		else if (canMove(x + 1,y,water))
+		else if (canMove(x + 1, y, water))
 		{
-			map[x + 1][y] = water;
-			map[x][y] = none;
-
+			swapParticles(x, y, x + 1, y);
 		}
 	}
 }
@@ -149,7 +135,12 @@ bool Particle::canMove(int x, int y, char particleType)
 		}
 	}
 
-
 	return move;
 }
 
+void Particle::swapParticles(int x, int y, int xn, int yn)
+{
+	char tmp = map[x][y];
+	map[x][y] = map[xn][yn];
+	map[xn][yn] = tmp;
+}
