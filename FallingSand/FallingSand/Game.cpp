@@ -159,6 +159,10 @@ void Game::drawGui()
 	fpsText_r.w = fpsText_s->w;
 	fpsText_r.h = fpsText_s->h;
 	SDL_RenderCopy(renderer, fpsText_t, NULL, &fpsText_r);
+	
+	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+	SDL_Rect brush_r = { mouseX - brushSize / 2,mouseY - brushSize / 2,brushSize,brushSize };
+	SDL_RenderDrawRect(renderer, &brush_r);
 
 	SDL_Rect icon_r;
 	if (selectedParticle == sand)
