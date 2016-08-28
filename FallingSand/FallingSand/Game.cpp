@@ -13,6 +13,9 @@ void Game::initGraphics()
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Falling Sand", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	startick = SDL_GetTicks();
+	TTF_Init();
+	font = TTF_OpenFont("font/OpenSans-Regular.ttf", 12);
 }
 
 
@@ -27,7 +30,8 @@ void Game::play()
 		if (mousePressed) addParticles();
 		updateParticles();
 		drawParticles();
-
+		fpsCounter();
+		drawGui();
 		SDL_RenderPresent(renderer);
 	}
 }
@@ -72,7 +76,10 @@ void Game::addParticles()
 	for (int i = -brushSize / 2; i < brushSize / 2; i++)
 		for (int j = -brushSize / 2; j < brushSize / 2; j++)
 		{
-			particles.map[x + i][y + j] = selectedParticle;
+			if (x+i > 0 && x+i < 800 && y+j>0 && y+j < 600)
+			{
+				particles.map[x + i][y + j] = selectedParticle;
+			}
 		}
 }
 
@@ -96,7 +103,6 @@ void Game::updateParticles()
 			{
 				particles.move(x, y);
 			}
-
 	}
 }
 
@@ -105,18 +111,39 @@ void Game::drawParticles()
 	for (int x = 0; x < width; x++)
 		for (int y = 0; y < height; y++)
 		{
-
 			if (particles.map[x][y] == sand)
 			{
 				SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
 				SDL_RenderDrawPoint(renderer, x, y);
-
 			}
 			else if (particles.map[x][y] == water)
 			{
 				SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 				SDL_RenderDrawPoint(renderer, x, y);
-
 			}
 		}
+}
+
+void Game::fpsCounter()
+{
+	frames++;
+	if (SDL_GetTicks() - startick >= 1000)
+	{
+		currentFPS = frames;
+		frames = 0;
+		startick = SDL_GetTicks();
+	}
+}
+
+void Game::drawGui()
+{
+	string fpsText = "FPS: " + to_string(currentFPS);
+	SDL_Surface* fpsText_s = TTF_RenderText_Solid(font, fpsText.c_str(), textColor);
+	SDL_Texture* fpsText_t = SDL_CreateTextureFromSurface(renderer, fpsText_s);
+	SDL_Rect fpsText_r;
+	fpsText_r.x = 0;
+	fpsText_r.y = 0;
+	fpsText_r.w = fpsText_s->w;
+	fpsText_r.h = fpsText_s->h;
+	SDL_RenderCopy(renderer, fpsText_t, NULL, &fpsText_r);
 }

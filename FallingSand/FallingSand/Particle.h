@@ -1,10 +1,11 @@
 #pragma once
 
-//#include <iostream>
+#include <iostream>
 #include <SDL.h>
 #include <cstdlib>
 #include <ctime>
 //#include <vector>;
+
 
 //particles names
 #define none 'n'
