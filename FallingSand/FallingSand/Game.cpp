@@ -28,7 +28,7 @@ void Game::play()
 
 		handleEvent();
 		if (mousePressed) addParticles();
-		updateParticles();
+		if(!pause) updateParticles();
 		drawParticles();
 		fpsCounter();
 		drawGui();
@@ -60,6 +60,11 @@ void Game::handleEvent()
 		{
 			brushSize += event.wheel.y;
 			if (brushSize < 2) brushSize = 2;
+		}
+
+		if (event.type == SDL_KEYDOWN)
+		{
+			if (event.key.keysym.sym == SDLK_SPACE) pause = !pause;
 		}
 
 		if (event.type == SDL_QUIT)

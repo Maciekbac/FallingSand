@@ -30,6 +30,7 @@ private:
 	int startick;
 	int frames = 0;
 	int currentFPS = 0;
+	bool pause = false;
 
 public:
 	Game();
