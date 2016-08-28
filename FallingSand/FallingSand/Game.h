@@ -12,6 +12,11 @@ using namespace std;
 
 #define width 800
 #define height 600
+#define iconSize 30 //particle selection icon size
+#define iconBorder 4
+#define iconX width - iconSize - 10
+#define sandIconY 5
+#define waterIconY 10+iconSize
 
 class Game
 {
@@ -22,9 +27,11 @@ private:
 	SDL_Color textColor = { 0,0,0 };
 	SDL_Event event;
 	Particle particles;
-	bool mousePressed = false;
+	int mouseX, mouseY;
+	bool mousePressedL = false;
+	bool mousePressedR = false;
 	int brushSize = 5;
-	char selectedParticle;
+	char selectedParticle=sand;
 	bool moveDir = false;
 	bool quit = false;
 	int startick;
@@ -37,10 +44,11 @@ public:
 	void initGraphics();
 	void play();
 	void handleEvent();
-	void addParticles();
+	void addParticles(char type);
 	void updateParticles();
 	void drawParticles();
 	void fpsCounter();
 	void drawGui();
+	bool insideIcon(char type);
 };
 

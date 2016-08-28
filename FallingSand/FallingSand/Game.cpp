@@ -27,8 +27,9 @@ void Game::play()
 		SDL_RenderClear(renderer);
 
 		handleEvent();
-		if (mousePressed) addParticles();
-		if(!pause) updateParticles();
+		if (mousePressedL) addParticles(selectedParticle);
+		else if (mousePressedR) addParticles(none);
+		if (!pause) updateParticles();
 		drawParticles();
 		fpsCounter();
 		drawGui();
@@ -39,22 +40,31 @@ void Game::play()
 void Game::handleEvent()
 {
 	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			SDL_GetMouseState(&mouseX, &mouseY);
+		}
+
 		if (event.type == SDL_MOUSEBUTTONDOWN)
 		{
-			mousePressed = true;
 			if (event.button.button == SDL_BUTTON_LEFT)
 			{
-				selectedParticle = sand;
+				if (insideIcon(sand))
+					selectedParticle = sand;
+				else if (insideIcon(water))
+					selectedParticle = water;
+				else mousePressedL = true;
 			}
 
 			else if (event.button.button == SDL_BUTTON_RIGHT)
 			{
-				selectedParticle = water;
+				mousePressedR = true;
 			}
 		}
 		else if (event.type == SDL_MOUSEBUTTONUP)
 		{
-			mousePressed = false;
+			mousePressedL = false;
+			mousePressedR = false;
 		}
 		if (event.type == SDL_MOUSEWHEEL)
 		{
@@ -74,16 +84,14 @@ void Game::handleEvent()
 	}
 }
 
-void Game::addParticles()
+void Game::addParticles(char type)
 {
-	int x, y;
-	SDL_GetMouseState(&x, &y);
 	for (int i = -brushSize / 2; i < brushSize / 2; i++)
 		for (int j = -brushSize / 2; j < brushSize / 2; j++)
 		{
-			if (x+i > 0 && x+i < 800 && y+j>0 && y+j < 600)
+			if (mouseX + i > 0 && mouseX + i < 800 && mouseY + j>0 && mouseY + j < 600)
 			{
-				particles.map[x + i][y + j] = selectedParticle;
+				particles.map[mouseX + i][mouseY + j] = type;
 			}
 		}
 }
@@ -151,4 +159,71 @@ void Game::drawGui()
 	fpsText_r.w = fpsText_s->w;
 	fpsText_r.h = fpsText_s->h;
 	SDL_RenderCopy(renderer, fpsText_t, NULL, &fpsText_r);
+
+	SDL_Rect icon_r;
+	if (selectedParticle == sand)
+	{
+		icon_r = { width - iconSize - 10 - iconBorder / 2,5 - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
+		SDL_SetRenderDrawColor(renderer, 50, 0, 100, 255);
+		SDL_RenderFillRect(renderer, &icon_r);
+	}
+	icon_r = { iconX,sandIconY,iconSize,iconSize };
+	SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
+	SDL_RenderFillRect(renderer, &icon_r);
+
+	if (selectedParticle == water)
+	{
+		icon_r = { iconX - iconBorder / 2, 10 + iconSize - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
+		SDL_SetRenderDrawColor(renderer, 50, 0, 100, 255);
+		SDL_RenderFillRect(renderer, &icon_r);
+	}
+
+	icon_r = { iconX,waterIconY,iconSize,iconSize };
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	SDL_RenderFillRect(renderer, &icon_r);
+
+	if (insideIcon(sand))
+	{
+		SDL_Surface* iconText_s = TTF_RenderText_Solid(font, "Sand", textColor);
+		SDL_Texture* iconText_t = SDL_CreateTextureFromSurface(renderer, iconText_s);
+		SDL_Rect iconText_r;
+		iconText_r.x = iconX - iconBorder - iconText_s->w - 5;
+		iconText_r.y = sandIconY + iconSize/4;
+		iconText_r.w = iconText_s->w;
+		iconText_r.h = iconText_s->h;
+		SDL_RenderCopy(renderer, iconText_t, NULL, &iconText_r);
+	}
+	
+	else if (insideIcon(water))
+	{
+		SDL_Surface* iconText_s = TTF_RenderText_Solid(font, "Water", textColor);
+		SDL_Texture* iconText_t = SDL_CreateTextureFromSurface(renderer, iconText_s);
+		SDL_Rect iconText_r;
+		iconText_r.x = iconX - iconBorder - iconText_s->w - 5;
+		iconText_r.y = waterIconY + iconSize / 4;
+		iconText_r.w = iconText_s->w;
+		iconText_r.h = iconText_s->h;
+		SDL_RenderCopy(renderer, iconText_t, NULL, &iconText_r);
+	}
+}
+
+bool Game::insideIcon(char type)
+{
+	bool inside = false;
+	if (mouseX >= iconX && mouseX <= iconX + iconSize)
+	{
+		if (type == sand)
+		{
+			if (mouseY >= sandIconY && mouseY <= sandIconY + iconSize)
+				inside = true;
+		}
+
+		else if (type == water)
+		{
+			if (mouseY >= waterIconY && mouseY <= waterIconY + iconSize)
+				inside = true;
+		}
+	}
+
+	return inside;
 }
