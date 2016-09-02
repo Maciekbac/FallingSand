@@ -121,20 +121,48 @@ void Game::updateParticles()
 
 void Game::drawParticles()
 {
-	for (int x = 0; x < width; x++)
-		for (int y = 0; y < height; y++)
+	//for (int x = 0; x < width; x++)
+	//	for (int y = 0; y < height; y++)
+	//	{
+	//		if (particles.map[x][y] == sand)
+	//		{
+	//			SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
+	//			SDL_RenderDrawPoint(renderer, x, y);
+	//		}
+	//		else if (particles.map[x][y] == water)
+	//		{
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	//			SDL_RenderDrawPoint(renderer, x, y);
+	//		}
+	//	}
+	char lastParticle = none;
+	char currentParticle;
+	int lineLength = 1;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
 		{
-			if (particles.map[x][y] == sand)
+			currentParticle = particles.map[x][y];
+			if (currentParticle == lastParticle) lineLength++;
+			if (currentParticle != lastParticle || x == width - 1)
 			{
-				SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
-				SDL_RenderDrawPoint(renderer, x, y);
-			}
-			else if (particles.map[x][y] == water)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-				SDL_RenderDrawPoint(renderer, x, y);
+				if (lastParticle != none)
+				{
+					if (x == width - 1) x++;
+					if (lastParticle == sand)
+						SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
+					else if (lastParticle == water)
+						SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+					SDL_RenderDrawLine(renderer, x - lineLength, y, x - 1, y);
+				}
+				lastParticle = currentParticle;
+				lineLength = 1;
 			}
 		}
+		lastParticle = none;
+		lineLength = 1;
+	}
+
 }
 
 void Game::fpsCounter()
@@ -159,7 +187,7 @@ void Game::drawGui()
 	fpsText_r.w = fpsText_s->w;
 	fpsText_r.h = fpsText_s->h;
 	SDL_RenderCopy(renderer, fpsText_t, NULL, &fpsText_r);
-	
+
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
 	SDL_Rect brush_r = { mouseX - brushSize / 2,mouseY - brushSize / 2,brushSize,brushSize };
 	SDL_RenderDrawRect(renderer, &brush_r);
@@ -192,12 +220,12 @@ void Game::drawGui()
 		SDL_Texture* iconText_t = SDL_CreateTextureFromSurface(renderer, iconText_s);
 		SDL_Rect iconText_r;
 		iconText_r.x = iconX - iconBorder - iconText_s->w - 5;
-		iconText_r.y = sandIconY + iconSize/4;
+		iconText_r.y = sandIconY + iconSize / 4;
 		iconText_r.w = iconText_s->w;
 		iconText_r.h = iconText_s->h;
 		SDL_RenderCopy(renderer, iconText_t, NULL, &iconText_r);
 	}
-	
+
 	else if (insideIcon(water))
 	{
 		SDL_Surface* iconText_s = TTF_RenderText_Solid(font, "Water", textColor);

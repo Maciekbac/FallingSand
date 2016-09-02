@@ -30,7 +30,7 @@ private:
 	int mouseX, mouseY;
 	bool mousePressedL = false;
 	bool mousePressedR = false;
-	int brushSize = 5;
+	int brushSize = 10;
 	char selectedParticle=sand;
 	bool moveDir = false;
 	bool quit = false;
