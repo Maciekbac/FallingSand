@@ -8,10 +8,10 @@
 
 
 //particles names
-#define none 'n'
-#define sand 's'
-#define water 'w'
-
+#define none 0
+#define sand 1
+#define water 2
+#define wall 3
 
 using namespace std;
 

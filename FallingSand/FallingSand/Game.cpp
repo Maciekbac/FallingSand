@@ -53,6 +53,8 @@ void Game::handleEvent()
 					selectedParticle = sand;
 				else if (insideIcon(water))
 					selectedParticle = water;
+				else if (insideIcon(wall))
+					selectedParticle = wall;
 				else mousePressedL = true;
 			}
 
@@ -153,6 +155,8 @@ void Game::drawParticles()
 						SDL_SetRenderDrawColor(renderer, 255, 200, 100, 255);
 					else if (lastParticle == water)
 						SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+					else if (lastParticle == wall)
+						SDL_SetRenderDrawColor(renderer, 40, 30, 30, 255);
 					SDL_RenderDrawLine(renderer, x - lineLength, y, x - 1, y);
 				}
 				lastParticle = currentParticle;
@@ -195,7 +199,7 @@ void Game::drawGui()
 	SDL_Rect icon_r;
 	if (selectedParticle == sand)
 	{
-		icon_r = { width - iconSize - 10 - iconBorder / 2,5 - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
+		icon_r = { iconX - iconBorder / 2,sandIconY - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
 		SDL_SetRenderDrawColor(renderer, 50, 0, 100, 255);
 		SDL_RenderFillRect(renderer, &icon_r);
 	}
@@ -205,13 +209,24 @@ void Game::drawGui()
 
 	if (selectedParticle == water)
 	{
-		icon_r = { iconX - iconBorder / 2, 10 + iconSize - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
+		icon_r = { iconX - iconBorder / 2, waterIconY - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
 		SDL_SetRenderDrawColor(renderer, 50, 0, 100, 255);
 		SDL_RenderFillRect(renderer, &icon_r);
 	}
 
 	icon_r = { iconX,waterIconY,iconSize,iconSize };
 	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+	SDL_RenderFillRect(renderer, &icon_r);
+
+	if (selectedParticle == wall)
+	{
+		icon_r = { iconX - iconBorder / 2, wallIconY - iconBorder / 2,iconSize + iconBorder,iconSize + iconBorder };
+		SDL_SetRenderDrawColor(renderer, 50, 0, 100, 255);
+		SDL_RenderFillRect(renderer, &icon_r);
+	}
+
+	icon_r = { iconX,wallIconY,iconSize,iconSize };
+	SDL_SetRenderDrawColor(renderer, 40, 30, 30, 255);
 	SDL_RenderFillRect(renderer, &icon_r);
 
 	if (insideIcon(sand))
@@ -253,6 +268,12 @@ bool Game::insideIcon(char type)
 		else if (type == water)
 		{
 			if (mouseY >= waterIconY && mouseY <= waterIconY + iconSize)
+				inside = true;
+		}
+
+		else if (type == wall)
+		{
+			if (mouseY >= wallIconY && mouseY <= wallIconY + iconSize)
 				inside = true;
 		}
 	}

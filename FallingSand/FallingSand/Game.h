@@ -14,9 +14,10 @@ using namespace std;
 #define height 600
 #define iconSize 30 //particle selection icon size
 #define iconBorder 4
-#define iconX width - iconSize - 10
+#define iconX width - iconSize - 10 
 #define sandIconY 5
-#define waterIconY 10+iconSize
+#define waterIconY 10 + iconSize
+#define wallIconY 15 + 2 * iconSize
 
 class Game
 {
@@ -31,7 +32,7 @@ private:
 	bool mousePressedL = false;
 	bool mousePressedR = false;
 	int brushSize = 10;
-	char selectedParticle=sand;
+	char selectedParticle = sand;
 	bool moveDir = false;
 	bool quit = false;
 	int startick;
